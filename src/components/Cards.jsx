@@ -20,6 +20,8 @@ const arr = [
     { active: false, value: '22', id: 16 }
 ];
 
+const baseCardObject = { active: false, value: null, id: null };
+
 const handlePairsDefault = { lastCardId: null, lastCardValue: null, increment: 0 };
 
 const Cards = () => {
@@ -29,17 +31,26 @@ const Cards = () => {
     const [count, setCount] = useState(0);
 
     const createCards = (pairsQtd = 8) => {
+        let a = new Array(pairsQtd * 2).fill(null);
+        let final = new Array;
+
+        a.reduce((acc, val) => {
+            // const value = parseInt(Math.random() * 100) // @TODO criar um validador do numero randomico
+            final.push({ active: false, value: parseInt(Math.random() * 100), id: acc})
+            return acc + 2;
+        }, 2)
+
+        console.log(a)
+        console.log(final)
+
         setCards(arr);
     }
 
     const toggleCard = (card) => {
         const {value, id, active} = card;
 
-        // let willResetedLastsPairs = false;
-
         const filtered = cards.map((c) => {
             let item = c;
-            // let incremented = handlePairs.increment + 1;
 
             if(item.id == id && !item.active){
                 item.active = true;
