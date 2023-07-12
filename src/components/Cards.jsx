@@ -9,7 +9,15 @@ const arr = [
     { active: false, value: '3', id: 5 },
     { active: false, value: '3', id: 6 },
     { active: false, value: '4', id: 7 },
-    { active: false, value: '5', id: 8 }
+    { active: false, value: '4', id: 8 },
+    { active: false, value: '5', id: 9 },
+    { active: false, value: '5', id: 10 },
+    { active: false, value: '81', id: 11 },
+    { active: false, value: '81', id: 12 },
+    { active: false, value: '99', id: 13 },
+    { active: false, value: '99', id: 14 },
+    { active: false, value: '22', id: 15 },
+    { active: false, value: '22', id: 16 }
 ];
 
 const handlePairsDefault = { lastCardId: null, lastCardValue: null, increment: 0 };
@@ -27,21 +35,37 @@ const Cards = () => {
     const toggleCard = (card) => {
         const {value, id, active} = card;
 
-        let willResetedLastsPairs = false;
+        // let willResetedLastsPairs = false;
 
         const filtered = cards.map((c) => {
             let item = c;
-            let incremented = handlePairs.increment + 1;
+            // let incremented = handlePairs.increment + 1;
 
             if(item.id == id && !item.active){
                 item.active = true;
-                if(incremented == 2){
+            }
+            return item;
+        })
+        
+        setCards(filtered)
+        validateMove(card)
+    }
+
+    const validateMove = (card) => {
+        const {value, id, active} = card;
+
+        cards.forEach((c) => {
+            let incremented = handlePairs.increment + 1;
+
+            if(c.id == id){
+                if(incremented == 2){ 
+                    setHandlePairs(handlePairsDefault);
+                    
                     if(value == handlePairs.lastCardValue){
                         alert('Encontrou um par');
                         setCount(prevState => prevState + 1);
-                        setHandlePairs(handlePairsDefault);
                     }else{
-                        willResetedLastsPairs = true;
+                        resetCardsById([id, handlePairs.lastCardId])
                         console.log("Voce perdeu nessa rodada");
                     }
                 }
@@ -49,27 +73,13 @@ const Cards = () => {
                     setHandlePairs({ lastCardValue: value, lastCardId: id, increment: incremented });
                 }
             }
-            return item;
+
         })
-        
-        setCards(filtered)
-        
-        if(willResetedLastsPairs){ // @TODO passar esse cara para um useRef e usar dps para resetar
-            const reseted = cards.map(c => {
-                let item = c;
-
-                if(c.id == id || c.id == handlePairs.lastCardId)
-                    item.active = false;
-
-                return item;
-            });
-           setTimeout(() => {
-            console.log('sera resetado')
-            setCards(reseted)
-           }, [3000]);
-        }
     }
 
+    const resetCardsById = (arrIds) => 
+        setCards(prevState => prevState.map(c => arrIds.includes(c.id) ? {...c, active: false} : c))
+    
     useEffect(() => console.log(handlePairs), [handlePairs])
 
     useEffect(() => createCards, [])
